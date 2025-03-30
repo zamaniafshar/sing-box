@@ -27,6 +27,7 @@ const (
 	TypeTailscale    = "tailscale"
 	TypeDERP         = "derp"
 	TypeDERPSTUN     = "derp-stun"
+	TypeResolved     = "resolved"
 )
 
 const (
