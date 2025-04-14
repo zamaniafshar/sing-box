@@ -159,15 +159,11 @@ func (s *APIServer) getStats(writer http.ResponseWriter, request *http.Request) 
 	requireClear := chi.URLParam(request, "clear") == "true"
 
 	users := s.user.List()
-	s.traffic.ReadUsers(users)
+	s.traffic.ReadUsers(users, requireClear)
 	for i := range users {
 		users[i].Password = ""
 	}
-	uplinkBytes, downlinkBytes, uplinkPackets, downlinkPackets, tcpSessions, udpSessions := s.traffic.ReadGlobal()
-
-	if requireClear {
-		s.traffic.Clear()
-	}
+	uplinkBytes, downlinkBytes, uplinkPackets, downlinkPackets, tcpSessions, udpSessions := s.traffic.ReadGlobal(requireClear)
 
 	render.JSON(writer, request, render.M{
 		"uplinkBytes":     uplinkBytes,
