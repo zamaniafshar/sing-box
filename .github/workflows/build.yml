@@ -131,6 +131,14 @@ jobs:
         if: github.event_name != 'workflow_dispatch'
         run: |-
           go run -v ./cmd/internal/update_android_version --ci --nightly
+      - name: Setup keystore
+        run: |
+          # Create local.properties with keystore passwords
+          cat > clients/android/local.properties << EOF
+          KEYSTORE_PASS=${{ secrets.KEYSTORE_PASS }}
+          ALIAS_NAME=${{ secrets.ALIAS_NAME }}
+          ALIAS_PASS=${{ secrets.ALIAS_PASS }}
+          EOF
       - name: Build
         run: |-
           mkdir clients/android/app/libs
@@ -140,7 +148,6 @@ jobs:
         env:
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
       - name: Prepare upload
         run: |-
           mkdir -p dist
